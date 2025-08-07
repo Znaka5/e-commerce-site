@@ -7,7 +7,7 @@ import Comment from "../models/comments.js"
 
 const boardController = Router()
 
-boardController.get("/catalog", async function (req, res) {
+boardController.get("/catalogs", async function (req, res) {
     const boards = await Boards.find({}).lean()
 
     res.json({ message: boards })
@@ -137,12 +137,12 @@ boardController.get("/:id/details", async function (req, res) {
 })
 
 boardController.get("/best-sellers", async function (req, res) {
-    let boards = await Boards.find({})
+    const boards = await Boards.find({})
+        .sort({ upvotes: -1 })
+        .limit(10);
+    res.json({ message: boards });
+});
 
-    boards = boards.sort((a, b) => b.upvotes - a.upvotes)
-
-    res.json({ message: boards })
-})
 
 boardController.get("/:id/:user_id/rating", async function (req, res) {
     const id = req.params.id

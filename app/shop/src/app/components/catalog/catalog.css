@@ -7,3 +7,47 @@ main {
 h2 {
   color: #1976d2;
 }
+.board-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: white;
+}
+.board-card a {
+  margin-right: 0.5rem;
+  padding: 0.25rem 0.75rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #1976d2;
+  color: white;
+  cursor: pointer;
+}
+.board-card a:hover {
+  background-color: #125ca1;
+}
+.empty {
+  color: #999;
+  font-style: italic;
+}
+.error {
+  color: #d32f2f;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+/* Spinner CSS */
+.spinner {
+  margin: 2rem auto;
+  border: 4px solid #f3f3f3; /* Light grey */
+  border-top: 4px solid #1976d2; /* Blue */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

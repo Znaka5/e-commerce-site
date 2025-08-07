@@ -1,11 +1,15 @@
 <nav>
-  <a [routerLink]="['/catalog']">Catalog</a>
+  <a routerLink="/catalog">Catalog</a>
   <a routerLink="/best-sellers">Best Sellers</a>
-  <a routerLink="/login">Login</a>
-  <a routerLink="/register">Register</a>
-  <a routerLink="/profile">Profile</a>
-  <a routerLink="/create">Create</a>
-  <a routerLink="/logout">Logout</a>
-   <a routerLink="/search">Search</a>
+
+  <a routerLink="/login" *ngIf="!isLoggedIn">Login</a>
+  <a routerLink="/register" *ngIf="!isLoggedIn">Register</a>
+
+  <a routerLink="/profile" *ngIf="isLoggedIn">Profile</a>
+  <a routerLink="/create" *ngIf="isLoggedIn">Create</a>
+  <a routerLink="/logout" *ngIf="isLoggedIn">Logout</a>
+
+  <a routerLink="/search">Search</a>
 </nav>
+
 <router-outlet></router-outlet>

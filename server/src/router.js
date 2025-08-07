@@ -9,6 +9,6 @@ const routes = Router()
 
 routes.use(home)
 routes.use("/users", userController)
-routes.use("/boards", boardController)
+routes.use("/catalog", boardController)
 
 export default routes
