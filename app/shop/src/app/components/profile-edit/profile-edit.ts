@@ -120,7 +120,10 @@ export class EditProfileComponent implements OnInit {
             this.successMessage = 'Profile updated successfully!';
             this.errorMessage = '';
             localStorage.setItem('user', JSON.stringify(updatedData));
-            this.router.navigate(['/']);
+            
+             setTimeout(() => {
+              this.router.navigate(['/']);
+            }, 1000) //return to the main menu
           },
           error: () => {
             this.successMessage = '';
