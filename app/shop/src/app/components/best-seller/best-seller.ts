@@ -16,7 +16,7 @@ import { CommonModule } from '@angular/common';
 
       <div *ngFor="let board of boards" class="board-card">
         <h3>{{ board.title }}</h3>
-        <p><strong>Upvotes:</strong> {{ board.upvotes }}</p>
+        <p><strong>Ratings:</strong> {{ board.upvotes }}</p>
         <p><strong>Owner:</strong> {{ board.owner }}</p>
 
         <a href="/products/{{ board._id }}/details" class="button">Details</a>

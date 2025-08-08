@@ -12,6 +12,11 @@ const boardSchema = new Schema({
     comments: [
 
     ],
+
+    img: {
+        type : String
+    },
+    
     upvoted: [
         {
             type: Types.ObjectId,

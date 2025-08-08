@@ -13,10 +13,13 @@ import { CommonModule } from '@angular/common';
 
       <p><strong>Description:</strong> {{ board.description }}</p>
       <p><strong>Owner:</strong> {{ board.owner }}</p>
-      <p><strong>Upvotes:</strong> {{ board.upvotes }}</p>
+      <p><strong>Ratings:</strong> {{ board.upvotes }}</p>
 
-      <a href="/products/{{ board._id }}/edit" class="button">Edit</a>
-      <a href="/products/{{ board._id }}/delete" class="button">Delete</a>
+      <!-- inline check: only show if current user is owner -->
+      <ng-container *ngIf="board.owner_id === currentUserId">
+        <a href="/products/{{ board._id }}/edit" class="button">Edit</a>
+        <a href="/products/{{ board._id }}/delete" class="button">Delete</a>
+      </ng-container>
     </main>
 
     <div *ngIf="loading" class="spinner">Loading...</div>
@@ -28,12 +31,15 @@ export class DetailsComponent implements OnInit {
   board: any;
   loading = true;
   error = '';
+  currentUserId: string = '';
 
   constructor(private route: ActivatedRoute, private http: HttpClient) {}
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    this.currentUserId = user?._id || '';
 
+    const id = this.route.snapshot.paramMap.get('id');
     this.http.get<any>(`http://localhost:5000/catalog/${id}/details`).subscribe({
       next: (res) => {
         this.board = res.message;
