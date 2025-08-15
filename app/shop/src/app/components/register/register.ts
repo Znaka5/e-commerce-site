@@ -50,7 +50,7 @@ import { CommonModule } from '@angular/common';
 export class RegisterComponent {
   registerForm: FormGroup;
   errorMessage: string = '';
-  showFormError = false;
+  showFormError: boolean = false;
 
   constructor(
     private fb: FormBuilder,

@@ -62,8 +62,8 @@ import { CommonModule } from '@angular/common';
 })
 export class DeleteComponent implements OnInit {
   boardId!: string;
-  successMessage = '';
-  errorMessage = '';
+  successMessage: string = '';
+  errorMessage: string = '';
   loading = false;
 
   constructor(
@@ -103,7 +103,7 @@ export class DeleteComponent implements OnInit {
           this.loading = false;
           this.errorMessage = 'Server error. Please try again.';
           this.successMessage = '';
-          console.error('Delete error:', err);
+ 
         }
       });
   }

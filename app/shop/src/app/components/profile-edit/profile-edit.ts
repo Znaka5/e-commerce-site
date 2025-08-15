@@ -66,8 +66,8 @@ import { Router } from '@angular/router';
 export class EditProfileComponent implements OnInit {
   profileForm: FormGroup;
   user: any = null;
-  successMessage = '';
-  errorMessage = '';
+  successMessage: string = '';
+  errorMessage: string = '';
 
   constructor(private fb: FormBuilder, private http: HttpClient, private router: Router) {
     this.profileForm = this.fb.group({
@@ -123,7 +123,7 @@ export class EditProfileComponent implements OnInit {
 
             setTimeout(() => {
               this.router.navigate(['/']);
-            }, 1000) //return to the main menu
+            }, 1000)
           },
           error: () => {
             this.successMessage = '';

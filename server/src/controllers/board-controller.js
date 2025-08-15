@@ -13,7 +13,7 @@ boardController.get("/catalogs", async function (req, res) {
     res.json({ message: boards })
 })
 
-boardController.get("/:id/rating", async function (req, res) {
+boardController.get("/:id/ratings", async function (req, res) {
     const id = new Types.ObjectId(req.params.id)
 
     const comments = await Comment.findOne({ _id: id })
@@ -21,57 +21,108 @@ boardController.get("/:id/rating", async function (req, res) {
     res.json({ message: comments })
 })
 
-boardController.get("/ratings", async function (req, res) {
-    const comments = await Comment.find({})
+boardController.post('/:id/ratings', async (req, res) => {
+    const boardId = req.params.id;
+    const { score, comment } = req.body;
 
-    res.json({ message: comments })
-})
-
-boardController.post("/ratings", async function (req, res) {
-    let userData = req.body
-
-    userData.post_id = new Types.ObjectId(userData.post_id)
-    userData.likes = 0
-    userData.liked = []
+    if (!score || !comment) {
+        return res.status(400).json({ status: 400, message: 'Score and comment are required' });
+    }
 
     try {
-        const data = await Comment.create(userData)
-        let board = await Boards.findOne({ _id: userData.post_id })
+        const board = await Boards.findById(boardId);
+        if (!board) return res.status(404).json({ status: 404, message: 'Board not found' });
 
-        board.comments.push(data)
+        board.comments.push({ score, comment, date: new Date() });
+        board.upvotes = board.comments.length;
 
-        await Boards.updateOne({ _id: userData.post_id }, board)
+        await board.save();
 
-        res.json({ satus: 200, recievedData: data })
+        res.json({
+            status: 200,
+            message: 'Rating added successfully',
+            rating: board.comments[board.comments.length - 1],
+            totalRatings: board.upvotes
+        });
     } catch (err) {
-        res.json({ status: 400, recievedData: "error" })
+        console.error(err);
+        res.status(500).json({ status: 500, message: 'Server error while saving rating' });
     }
+});
+
+boardController.post("/:id/order", async function (req, res) {
+    const id = new Types.ObjectId(req.params.id)
+    const board = req.body
+
+    await Boards.updateOne({ _id: id }, board)
+
+    res.json({ status: 200 })
 })
 
-// boardController.post("/:id/comments-like", async function (req, res) {
-//     const id = new Types.ObjectId(req.params.id)
-//     const { userId } = req.body
+boardController.get("/:id/:user_id/ordered", async function (req, res) {
+    const id = new Types.ObjectId(req.params.id)
+    const userId = new Types.ObjectId(req.params.user_id)
+    let ordered = await Boards.findOne({ _id: id })
 
-//     try {
-//         let data = await Comment.findOne({ _id: id })
-//         data.likes = data.likes + 1
-//         data.liked.push(userId)
+    if (ordered.upvoted.includes(userId)) {
+        ordered = true
+    } else {
+        ordered = false
+    }
 
-//         let board = await Boards.findOne({ _id: data.post_id })
+    res.json({ status: 200, bool: ordered })
+})
 
-//         let index = board.comments.findIndex(obj => obj._id === data._id)
-//         board.comments.splice(index, 1, data)
 
-//         await Boards.updateOne({ _id: data.post_id }, board)
-//         await Comment.updateOne({ _id: data._id }, data)
+boardController.get("/:id/:user_id/isCreator", async function (req, res) {
+    try {
+        const { id, user_id } = req.params
 
-//         const comments = await Comment.find({})
+        if (!Types.ObjectId.isValid(id) || !Types.ObjectId.isValid(user_id)) {
+            return res.status(400).json({ status: 400, bool: false })
+        }
 
-//         res.json({ satus: 200, recievedData: comments })
-//     } catch (err) {
-//         res.json({ status: 400, recievedData: "error" })
-//     }
-// })
+        const board = await Boards.findOne({ _id: id }).lean()
+        if (!board) return res.json({ status: 200, bool: false })
+
+        const isOwner = board.owner_id.toString() === user_id.toString()
+
+        res.json({ status: 200, bool: isOwner })
+    } catch (err) {
+        res.status(500).json({ status: 500, bool: false })
+    }
+});
+
+
+boardController.get("/:user_id/cart", async function (req, res) {
+    try {
+        const userId = new Types.ObjectId(req.params.user_id)
+
+        const boards = await Boards.find({ upvoted: userId })
+
+        if (boards.length > 0) {
+            res.json({ status: 200, boards })
+        } else {
+            res.json({ status: 404, message: "Nothing found for this user." })
+        }
+    } catch (err) {
+        res.json({ status: 500, message: "Server error." })
+    }
+});
+
+
+boardController.post("/:id/:user_id/cart-remove", async function (req, res) {
+    const id = new Types.ObjectId(req.params.id)
+    const userId = new Types.ObjectId(req.params.user_id)
+    let ordered = await Boards.findOne({ _id: id })
+
+    ordered.upvoted = ordered.upvoted.filter(u => !u.equals(userId))
+
+    await Boards.updateOne({ _id: id }, ordered)
+
+    res.json({ status: 200 })
+});
+
 
 boardController.post("/:id/rating-edit", async function (req, res) {
     const id = new Types.ObjectId(req.params.id)
@@ -144,22 +195,6 @@ boardController.get("/best-sellers", async function (req, res) {
 });
 
 
-boardController.get("/:id/:user_id/rating", async function (req, res) {
-    const id = req.params.id
-    const userId = new Types.ObjectId(req.params.user_id)
-    let board = await Boards.findOne({ _id: id })
-    board.upvotes = `${Number(board.upvotes) + 1}`
-    board.upvoted.push(userId)
-
-    try {
-        await Boards.updateOne({ _id: board._id }, board)
-
-        res.json({ satus: 200, recievedData: board })
-    } catch (err) {
-        res.json({ status: 400, recievedData: "error" })
-    }
-})
-
 boardController.get("/:id/delete", async function (req, res) {
     const id = req.params.id
     const board = await Boards.findOne({ _id: id })
@@ -193,30 +228,13 @@ boardController.post("/:id/edit", async function (req, res) {
     }
 })
 
-boardController.post("/search-products", async function (req, res) {
-    const query = req.body
-    let boards = await Boards.find({title: query.name}).lean()
+boardController.post("/search-products", async (req, res) => {
+  const query = req.body;
 
-    if (query.filter === "top") {
-        boards = boards.sort((a, b) => b.upvotes - a.upvotes)
-    } else {
-        boards = boards.sort((a, b) => a.upvotes - b.upvotes)
-    }
+  const boards = await Boards.find({ title: { $regex: query.name, $options: "i" } }).lean();
 
-    res.json({status: 200, recievedData: boards})
-})
+  res.json({ status: 200, recievedData: boards });
+});
 
-// boardController.post("/search-comments", async function (req, res) {
-//     const query = req.body
-//     let boards = await Comment.find({message: query.name}).lean()
-
-//     if (query.filter === "top") {
-//         boards = boards.sort((a, b) => b.upvotes - a.upvotes)
-//     } else {
-//         boards = boards.sort((a, b) => a.upvotes - b.upvotes)
-//     }
-    
-//     res.json({status: 200, recievedData: boards})
-// })
 
 export default boardController

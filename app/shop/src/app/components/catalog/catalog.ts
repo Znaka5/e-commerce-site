@@ -29,7 +29,7 @@ import { CommonModule } from '@angular/common';
 export class CatalogComponent implements OnInit {
   boards: any[] = [];
   loading = true;
-  error = '';
+  error: string = '';
 
   constructor(private http: HttpClient) { }
 

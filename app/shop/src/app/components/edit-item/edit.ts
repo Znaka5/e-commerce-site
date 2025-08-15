@@ -27,6 +27,14 @@ import { CommonModule } from '@angular/common';
           <input id="img" type="text" formControlName="img">
         </div>
 
+         <div class="form-group">
+          <label for="title">Price</label>
+          <input id="title" type="text" formControlName="price">
+          <div class="error" *ngIf="f['price'].touched && f['price'].invalid">
+            <span *ngIf="f['price'].errors?.['required']">Price is required</span>
+          </div>
+        </div>
+
         <button type="submit" [disabled]="productForm.invalid">Update</button>
       </form>
 
@@ -58,8 +66,8 @@ import { CommonModule } from '@angular/common';
 })
 export class EditComponent implements OnInit {
   productForm: FormGroup;
-  successMessage = '';
-  errorMessage = '';
+  successMessage: string = '';
+  errorMessage: string = '';
   productId!: string;
 
   constructor(
@@ -70,7 +78,8 @@ export class EditComponent implements OnInit {
   ) {
     this.productForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
-      img: ['']
+      img: [''],
+      price: ['', [Validators.required, Validators.pattern(/^[0-9]+$/)]]
     });
   }
 

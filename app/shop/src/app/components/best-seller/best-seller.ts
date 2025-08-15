@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { map, catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'app-best-sellers',
@@ -25,23 +27,24 @@ import { CommonModule } from '@angular/common';
   `,
   styleUrls: ['./best-seller.css']
 })
-export class BestSellersComponent {
+export class BestSellersComponent implements OnInit {
   boards: any[] = [];
   loading = true;
-  error = '';
+  error: string = '';
 
   constructor(private http: HttpClient) { }
 
   ngOnInit() {
-    this.http.get<{ message: any[] }>('http://localhost:5000/catalog/best-sellers').subscribe({
-      next: (res) => {
-        this.boards = res.message;
-        this.loading = false;
-      },
-      error: () => {
+    this.http.get<{ message: any[] }>('http://localhost:5000/catalog/best-sellers').pipe(
+      map(res => res.message),
+      catchError(err => {
         this.error = 'Failed to load boards.';
         this.loading = false;
-      }
+        return of([]); // fallback value
+      })
+    ).subscribe((boards) => {
+      this.boards = boards;
+      this.loading = false;
     });
   }
 }

@@ -5,7 +5,7 @@ const commentSchema = new Schema({
         type: String,
         required: true,
     },
-    owner: {
+    rating: {
         type: String,
     },
     post_id: {

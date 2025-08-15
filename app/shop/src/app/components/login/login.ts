@@ -45,7 +45,7 @@ import { CommonModule } from '@angular/common';
 export class LoginComponent {
   loginForm: FormGroup;
   errorMessage: string = '';
-  showFormError = false;
+  showFormError: boolean = false;
 
   constructor(
     private fb: FormBuilder,

@@ -16,6 +16,10 @@ const boardSchema = new Schema({
     img: {
         type : String
     },
+
+    price : {
+        type: String
+    },
     
     upvoted: [
         {

@@ -25,3 +25,53 @@ p {
   font-size: 1.1rem;
   margin: 0.5rem 0;
 }
+
+/* Ratings section wrapper to match layout */
+.ratings-box-wrapper {
+  max-width: 900px;
+  margin: 1rem auto 2rem;
+}
+
+/* Ratings box styles */
+.ratings-box {
+  background: #f8f9fa;
+  border: 1px solid #ddd;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.ratings-box h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.ratings-box ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ratings-box li {
+  padding: 0.25rem 0;
+  font-size: 1rem;
+  border-bottom: 1px solid #eee;
+}
+
+.ratings-box li:last-child {
+  border-bottom: none;
+}
+
+.no-ratings {
+  font-style: italic;
+  color: #777;
+}
+
+.board-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  display: block;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}

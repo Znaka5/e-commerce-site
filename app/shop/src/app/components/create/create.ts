@@ -25,6 +25,17 @@ import { CommonModule } from '@angular/common';
         <div class="form-group">
           <label for="img">Image URL</label>
           <input id="img" type="text" formControlName="img">
+          <div class="error" *ngIf="f['title'].touched && f['title'].invalid">
+          <span *ngIf="f['img'].errors?.['required']">Image is required.</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="title">Price</label>
+          <input id="title" type="text" formControlName="price">
+          <div class="error" *ngIf="f['title'].touched && f['title'].invalid">
+          <span *ngIf="f['price'].errors?.['required']">Price is required</span>
+          </div>
         </div>
 
         <button type="submit" [disabled]="boardForm.invalid">Create</button>
@@ -56,23 +67,17 @@ import { CommonModule } from '@angular/common';
     button:not(:disabled):hover { background-color: #0056b3; }
   `]
 })
-export class CreateComponent implements OnInit {
+export class CreateComponent {
   boardForm: FormGroup;
-  successMessage = '';
-  errorMessage = '';
+  successMessage: string = '';
+  errorMessage: string = '';
 
   constructor(private fb: FormBuilder, private http: HttpClient, private router: Router) {
     this.boardForm = this.fb.group({
       title: ['', [Validators.required, Validators.minLength(3)]],
-      img: ['']
+      img: ['', Validators.required],
+      price: ['', [Validators.required, Validators.pattern(/^[0-9]+$/)]]
     });
-  }
-
-  ngOnInit() {
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
-    if (!user || !user._id) {
-      this.errorMessage = 'User not found. Please log in.';
-    }
   }
 
   onSubmit() {
@@ -82,14 +87,11 @@ export class CreateComponent implements OnInit {
     }
 
     const user = JSON.parse(localStorage.getItem('user') || '{}');
-    if (!user || !user._id) {
-      this.errorMessage = 'User not found. Please log in.';
-      return;
-    }
 
     const payload = {
       title: this.boardForm.value.title,
       img: this.boardForm.value.img,
+      price: this.boardForm.value.price,
       upvotes: 0,
       comments: [],
       upvoted: [],

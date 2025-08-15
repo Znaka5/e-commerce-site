@@ -1,15 +1,20 @@
-<nav>
-  <a routerLink="/catalog">Catalog</a>
-  <a routerLink="/best-sellers">Best Sellers</a>
+<nav class="navbar">
+  <div class="nav-links">
+    <a routerLink="/catalog">Catalog</a>
+    <a routerLink="/best-sellers">Best Sellers</a>
 
-  <a routerLink="/login" *ngIf="!isLoggedIn">Login</a>
-  <a routerLink="/register" *ngIf="!isLoggedIn">Register</a>
+    <a routerLink="/login" *ngIf="!isLoggedIn">Login</a>
+    <a routerLink="/register" *ngIf="!isLoggedIn">Register</a>
 
-  <a routerLink="/profile" *ngIf="isLoggedIn">Profile</a>
-  <a routerLink="/products/create" *ngIf="isLoggedIn">Create</a>
-  <a routerLink="/products/logout" *ngIf="isLoggedIn">Logout</a>
+    <a routerLink="/profile" *ngIf="isLoggedIn">Profile</a>
+    <a routerLink="/products/create" *ngIf="isLoggedIn">Create</a>
+    <a routerLink="/logout" *ngIf="isLoggedIn">Logout</a>
 
-  <a routerLink="/search">Search</a>
+    <a routerLink="/search">Search</a>
+    <a routerLink="/products/cart" *ngIf="isLoggedIn" class="cart-icon"></a>
+  </div>
+
+  <a class="logo" routerLink="/about">ITEMS 4 TRADE</a>
 </nav>
 
 <router-outlet></router-outlet>
